@@ -75,7 +75,7 @@ document.getElementById('addcontact').addEventListener('submit', function (event
 
     document.getElementById('name').value = '';
     document.getElementById('number').value = '';
-    
+
     toggleClearAllButton()
 
 });

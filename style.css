@@ -1,21 +1,14 @@
 #contactlist {
-    margin-top: 5px;
-    list-style-type: none;
-
+    margin-top: 25px;
 }
 
 .contact {
     margin-top: 10px;
     display: flex;
-    align-items: center;
-    gap: 10px;
-
+    gap: 5px;
 }
 
 .contact span {
-    display: inline-block;
-    background-color: #ffffff;
     border: 1px solid black;
     min-width: 150px;
-    text-align: center;
 }
