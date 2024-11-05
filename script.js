@@ -1,3 +1,6 @@
+const clearAllButton = document.getElementById('clearAll');
+clearAllButton.style.display = 'none';
+
 document.getElementById('addcontact').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -6,7 +9,7 @@ document.getElementById('addcontact').addEventListener('submit', function (event
 
     if (!name || !number) return;
 
-    const contactDiv = document.createElement('div');
+    const contactDiv = document.createElement('li');
     contactDiv.classList.add('contact');
 
     const nameSpan = document.createElement('span');
@@ -61,6 +64,7 @@ document.getElementById('addcontact').addEventListener('submit', function (event
 
     removeButton.addEventListener('click', function () {
         contactDiv.remove();
+        toggleClearAllButton();
     });
     contactDiv.appendChild(nameSpan);
     contactDiv.appendChild(numberSpan);
@@ -71,5 +75,22 @@ document.getElementById('addcontact').addEventListener('submit', function (event
 
     document.getElementById('name').value = '';
     document.getElementById('number').value = '';
+    
+    toggleClearAllButton()
 
+});
+
+function toggleClearAllButton() {
+    const contactList = document.getElementById('contactlist');
+    if (contactList.children.length > 0) {
+        clearAllButton.style.display = 'inline-block';
+    } else {
+        clearAllButton.style.display = 'none';
+    }
+}
+
+clearAllButton.addEventListener('click', function () {
+    const contactList = document.getElementById('contactlist');
+    contactList.innerHTML = '';
+    toggleClearAllButton();
 });
