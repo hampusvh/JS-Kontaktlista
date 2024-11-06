@@ -1,96 +1,77 @@
-const clearAllButton = document.getElementById('clearAll');
-clearAllButton.style.display = 'none';
-
 document.getElementById('addcontact').addEventListener('submit', function (event) {
     event.preventDefault();
 
-    const name = document.getElementById('name').value.trim();
-    const number = document.getElementById('number').value.trim();
+    const nameField = document.getElementById('name');
+    const numberField = document.getElementById('number');
+    const errorField = document.getElementById('errorfield');
+    const contactList = document.getElementById('contactlist');
 
-    if (!name || !number) return;
+    let errorMessage = "";
+    if (!nameField.value || !numberField.value) {
+        errorMessage = "Både namn och telefonnummer måste fyllas i.";
+    }
 
-    const contactDiv = document.createElement('li');
-    contactDiv.classList.add('contact');
+    if (errorMessage) {
+        errorField.textContent = errorMessage;
+    } else {
+        errorField.textContent = "";
 
-    const nameSpan = document.createElement('span');
-    nameSpan.textContent = name;
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `
+            <span class="contact-text">
+                <span class="contact-name">${nameField.value}</span>
+                <span class="contact-number">${numberField.value}</span>
+            </span>
+            <button class="edit-save-btn">Edit</button>
+            <button class="remove-btn">Remove</button>
+        `;
+        contactList.appendChild(listItem);
 
-    const numberSpan = document.createElement('span');
-    numberSpan.textContent = number;
+        nameField.value = "";
+        numberField.value = "";
 
-    const editButton = document.createElement('button');
-    editButton.textContent = 'Edit';
+        listItem.querySelector('.edit-save-btn').addEventListener('click', function () {
+            const editButton = listItem.querySelector('.edit-save-btn');
+            const nameSpan = listItem.querySelector('.contact-name');
+            const numberSpan = listItem.querySelector('.contact-number');
 
-    const removeButton = document.createElement('button');
-    removeButton.textContent = 'Remove';
+            if (editButton.textContent === "Edit") {
+                nameSpan.innerHTML = `<input type="text" class="edit-name" value="${nameSpan.textContent.trim()}">`;
+                numberSpan.innerHTML = `<input type="number" class="edit-number" value="${numberSpan.textContent.trim()}">`;
+                editButton.textContent = "Save";
+            } else {
+                const newName = listItem.querySelector('.edit-name').value;
+                const newNumber = listItem.querySelector('.edit-number').value;
 
-    let nameInput, numberInput;
+                let hasError = false;
 
-    editButton.addEventListener('click', function () {
+                if (!newName) {
+                    nameSpan.innerHTML += `<div class="name-error">Namn saknas</div>`;
+                    hasError = true;
+                } else {
+                    nameSpan.textContent = newName;
+                }
 
-        if (editButton.textContent === 'Edit') {
+                if (!newNumber) {
+                    numberSpan.innerHTML += `<div class="number-error">Nummer saknas</div>`;
+                    hasError = true;
+                } else {
+                    numberSpan.textContent = newNumber;
+                }
 
-            nameInput = document.createElement('input');
-            nameInput.type = 'text';
-            nameInput.value = nameSpan.textContent.trim();
-            nameInput.required = true;
-
-            numberInput = document.createElement('input');
-            numberInput.type = 'number';
-            numberInput.value = numberSpan.textContent.trim();
-            numberInput.required = true;
-
-            contactDiv.replaceChild(nameInput, nameSpan);
-            contactDiv.replaceChild(numberInput, numberSpan);
-            editButton.textContent = 'Save';
-
-        } else {
-
-            if (!nameInput.checkValidity() || !numberInput.checkValidity()) {
-                nameInput.reportValidity();
-                numberInput.reportValidity();
-                return;
+                if (!hasError) {
+                    editButton.textContent = "Edit";
+                }
             }
+        });
 
-            nameSpan.textContent = nameInput.value;
-            numberSpan.textContent = numberInput.value;
-
-            contactDiv.replaceChild(nameSpan, nameInput);
-            contactDiv.replaceChild(numberSpan, numberInput);
-
-            editButton.textContent = 'Edit';
-        }
-    });
-
-    removeButton.addEventListener('click', function () {
-        contactDiv.remove();
-        toggleClearAllButton();
-    });
-    contactDiv.appendChild(nameSpan);
-    contactDiv.appendChild(numberSpan);
-    contactDiv.appendChild(editButton);
-    contactDiv.appendChild(removeButton);
-
-    document.getElementById('contactlist').appendChild(contactDiv);
-
-    document.getElementById('name').value = '';
-    document.getElementById('number').value = '';
-
-    toggleClearAllButton()
-
+        listItem.querySelector('.remove-btn').addEventListener('click', function () {
+            contactList.removeChild(listItem);
+        });
+    }
 });
 
-function toggleClearAllButton() {
+document.getElementById('clearAll').addEventListener('click', function () {
     const contactList = document.getElementById('contactlist');
-    if (contactList.children.length > 0) {
-        clearAllButton.style.display = 'inline-block';
-    } else {
-        clearAllButton.style.display = 'none';
-    }
-}
-
-clearAllButton.addEventListener('click', function () {
-    const contactList = document.getElementById('contactlist');
-    contactList.innerHTML = '';
-    toggleClearAllButton();
+    contactList.innerHTML = "";
 });

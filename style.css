@@ -1,14 +1,29 @@
 #contactlist {
-    margin-top: 25px;
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
 }
 
-.contact {
+.contact-name, .contact-number {
+    display: inline-block;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    margin-top: 20px;
+    min-width: 145px;
+    position: relative;
+}
+
+.name-error, .number-error {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    color: red;
+    margin-top: 2px;
+}
+
+#errorfield {
     margin-top: 10px;
-    display: flex;
-    gap: 5px;
-}
-
-.contact span {
-    border: 1px solid black;
-    min-width: 150px;
+    color: red;
+    position: absolute;
 }

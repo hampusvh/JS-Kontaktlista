@@ -9,13 +9,15 @@
 
 <body>
     <h2>Kontaktlista</h2>
+
     <div class="kreator">
         <form id="addcontact">
-            <input type="text" id="name" placeholder="namn" required>
-            <input type="number" id="number" placeholder="telefon" required>
+            <input type="text" id="name" placeholder="namn">
+            <input type="number" id="number" placeholder="telefon">
             <button type="submit">Lägg till kontakt</button>
             <button type="button" id="clearAll">Rensa lista</button>
         </form>
+        <div id="errorfield"></div>
     </div>
 
     <ul class="contactlist" id="contactlist">
