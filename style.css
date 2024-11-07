@@ -1,7 +1,7 @@
 #contactlist {
     list-style-type: none;
     padding: 0;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .contact-name, .contact-number {
@@ -14,16 +14,15 @@
     position: relative;
 }
 
+#errorfield, .error-messages div {
+    color: red;
+    padding: 2px 4px;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
 .name-error, .number-error {
     position: absolute;
     top: 100%;
     left: 0;
-    color: red;
-    margin-top: 2px;
-}
-
-#errorfield {
-    margin-top: 10px;
-    color: red;
-    position: absolute;
 }

@@ -7,71 +7,90 @@ document.getElementById('addcontact').addEventListener('submit', function (event
     const contactList = document.getElementById('contactlist');
 
     let errorMessage = "";
-    if (!nameField.value || !numberField.value) {
-        errorMessage = "Både namn och telefonnummer måste fyllas i.";
-    }
+    errorMessage += isInputRequired(nameField, "Namn");
+    errorMessage += isInputRequired(numberField, "Telefonnummer");
 
     if (errorMessage) {
-        errorField.textContent = errorMessage;
+        displayErrorMessage(errorField, errorMessage);
     } else {
-        errorField.textContent = "";
-
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `
-            <span class="contact-text">
-                <span class="contact-name">${nameField.value}</span>
-                <span class="contact-number">${numberField.value}</span>
-            </span>
-            <button class="edit-save-btn">Edit</button>
-            <button class="remove-btn">Remove</button>
-        `;
-        contactList.appendChild(listItem);
-
-        nameField.value = "";
-        numberField.value = "";
-
-        listItem.querySelector('.edit-save-btn').addEventListener('click', function () {
-            const editButton = listItem.querySelector('.edit-save-btn');
-            const nameSpan = listItem.querySelector('.contact-name');
-            const numberSpan = listItem.querySelector('.contact-number');
-
-            if (editButton.textContent === "Edit") {
-                nameSpan.innerHTML = `<input type="text" class="edit-name" value="${nameSpan.textContent.trim()}">`;
-                numberSpan.innerHTML = `<input type="number" class="edit-number" value="${numberSpan.textContent.trim()}">`;
-                editButton.textContent = "Save";
-            } else {
-                const newName = listItem.querySelector('.edit-name').value;
-                const newNumber = listItem.querySelector('.edit-number').value;
-
-                let hasError = false;
-
-                if (!newName) {
-                    nameSpan.innerHTML += `<div class="name-error">Namn saknas</div>`;
-                    hasError = true;
-                } else {
-                    nameSpan.textContent = newName;
-                }
-
-                if (!newNumber) {
-                    numberSpan.innerHTML += `<div class="number-error">Nummer saknas</div>`;
-                    hasError = true;
-                } else {
-                    numberSpan.textContent = newNumber;
-                }
-
-                if (!hasError) {
-                    editButton.textContent = "Edit";
-                }
-            }
-        });
-
-        listItem.querySelector('.remove-btn').addEventListener('click', function () {
-            contactList.removeChild(listItem);
-        });
+        clearErrorMessage(errorField);
+        addContactToList(nameField, numberField, contactList);
     }
 });
 
+function isInputRequired(input, fieldName) {
+    return input.value.trim() === "" ? `${fieldName} måste fyllas i.<br>` : "";
+}
+
+function displayErrorMessage(errorField, message) {
+    errorField.innerHTML = `<div class="display-error">${message}</div>`;
+}
+
+function clearErrorMessage(errorField) {
+    errorField.innerHTML = "";
+}
+
+function addContactToList(nameField, numberField, contactList) {
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `
+        <input type="text" class="contact-name" value="${nameField.value}" disabled>
+        <input type="text" class="contact-number" value="${numberField.value}" disabled>
+        <button class="edit-save-btn">Ändra</button>
+        <button class="remove-btn">Ta bort</button>
+        <div class="error-messages"></div>
+    `;
+
+    contactList.appendChild(listItem);
+
+    nameField.value = "";
+    numberField.value = "";
+
+    setUpContactActions(listItem);
+}
+
+function setUpContactActions(listItem) {
+    const editButton = listItem.querySelector('.edit-save-btn');
+    const removeButton = listItem.querySelector('.remove-btn');
+
+    editButton.addEventListener('click', function () {
+        handleEditSave(listItem, editButton);
+    });
+
+    removeButton.addEventListener('click', function () {
+        listItem.remove();
+    });
+}
+
+function handleEditSave(listItem, editButton) {
+    const nameInput = listItem.querySelector('.contact-name');
+    const numberInput = listItem.querySelector('.contact-number');
+    const errorContainer = listItem.querySelector('.error-messages');
+
+    if (editButton.textContent === "Ändra") {
+        nameInput.disabled = false;
+        numberInput.disabled = false;
+        editButton.textContent = "Spara";
+    } else {
+        const newName = nameInput.value.trim();
+        const newNumber = numberInput.value.trim();
+
+        let errorMessage = "";
+        errorMessage += isInputRequired({ value: newName }, "Namn");
+        errorMessage += isInputRequired({ value: newNumber }, "Telefonnummer");
+
+        if (errorMessage) {
+            displayErrorMessage(errorContainer, errorMessage);
+        } else {
+            clearErrorMessage(errorContainer);
+            nameInput.value = newName;
+            numberInput.value = newNumber;
+            nameInput.disabled = true;
+            numberInput.disabled = true;
+            editButton.textContent = "Ändra";
+        }
+    }
+}
+
 document.getElementById('clearAll').addEventListener('click', function () {
-    const contactList = document.getElementById('contactlist');
-    contactList.innerHTML = "";
+    document.getElementById('contactlist').innerHTML = "";
 });
